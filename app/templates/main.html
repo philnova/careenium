@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Careenium
+{% endblock %}
+
+{% block head %} 
+    {% if development %}
+        <base href="http:127.0.0.1:5000" /> 
+    {% else %}
+        <base href="https:real-url-will-eventually-go-here.com" /> 
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="canvas-elem">
+    <canvas id="game-canvas" width="750" height="450" style="border: 5px solid #000000;">
+        Update your browser to support HTML5 Canvas
+    </canvas>
+</div>
+
+{% endblock %}
