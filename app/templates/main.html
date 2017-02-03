@@ -16,6 +16,28 @@
 
 <script type="text/javascript">
 
+$(document).ready(function() { 
+
+    canvas = $('#game-canvas').get(0);
+    ctx = canvas.getContext("2d");
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+    // display mouse position in HTML on mousemove
+    canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        $('#x-coord-display').text(mousePos.x)
+        $('#y-coord-display').text(mousePos.y)
+        }, false);
+
+});
+
 </script>
 
 <div class="canvas-elem">
@@ -23,5 +45,10 @@
         Update your browser to support HTML5 Canvas
     </canvas>
 </div>
+
+<div class="cursor-display">
+    <span>X: <span id="x-coord-display"> none </span></span>
+    <span>Y: <span id="y-coord-display"> none </span></span>
+<div>
 
 {% endblock %}
