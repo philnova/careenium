@@ -7,6 +7,27 @@
 
 <body>
 
+<div class="navbar">
+    <div>
+
+        <div class="navbar-header">
+            <a href="{{ url_for('index') }}">
+                Careenium
+            </a>
+        </div>
+
+        <ul class="navbar-list">
+            <li>
+                <a href="{{ url_for('about') }}">
+                    About
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+</div>
+
 {% block content %}{% endblock %}
 
 </body>
