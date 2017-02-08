@@ -35,6 +35,8 @@
 
         SIMMS = []; // global array to hold simm objects as they are created
         SIMM_RADIUS = 15;
+        SIMM_X_VEL = 5;
+        SIMM_Y_VEL = 5;
 
         delta = 0;
         fps = 2;
@@ -61,7 +63,7 @@
         // register mouse click
         canvas.addEventListener('click', function(evt) {
             var mousePos = getMousePos(canvas, evt);
-            SIMMS.push(new Simm(SIMM_RADIUS, 1, new Position(mousePos.x, mousePos.y), 0));
+            SIMMS.push(new Simm(SIMM_RADIUS, 1, new Position(mousePos.x, mousePos.y), new Position(SIMM_X_VEL, SIMM_Y_VEL)));
 
             //erase canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
