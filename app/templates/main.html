@@ -20,16 +20,13 @@
 
     // helper function to draw generic objects on canvas
     function draw_objects_on_canvas(context, canvas, objects) {
-
         for (var i=0; i<objects.length; i++) {
             context.fillStyle = "#000000";
             context.beginPath();
             context.arc(objects[i].pos.x, objects[i].pos.y, objects[i].radius, 0, 2*Math.PI);
             context.fill();
         };
-
     };
-
 
     $(document).ready(function() { 
 
@@ -37,8 +34,13 @@
         ctx = canvas.getContext("2d");
 
         SIMMS = []; // global array to hold simm objects as they are created
-
         SIMM_RADIUS = 15;
+
+        delta = 0;
+        fps = 2;
+        maxFPS = 50;
+        started = false;
+        timestep = 1000 / 60;
 
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();
@@ -51,8 +53,8 @@
         // display mouse position in HTML on mousemove
         canvas.addEventListener('mousemove', function(evt) {
             var mousePos = getMousePos(canvas, evt);
-            $('#x-coord-display').text(mousePos.x)
-            $('#y-coord-display').text(mousePos.y)
+            $('#x-coord-display').text(mousePos.x);
+            $('#y-coord-display').text(mousePos.y);
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#a8a8a8";
@@ -76,18 +78,63 @@
 
         document.getElementById("btn-start-simulation").onclick = function() {
             simulation_instance = new Simulation(SIMMS, canvas, ctx);
-            mainLoop(simulation_instance);
+            start();
         };
 
-        function mainLoop(simulation) {
-            simulation.ctx.clearRect(0, 0, simulation.canvas.width, simulation.canvas.height);
-            draw_objects_on_canvas(simulation.ctx, simulation.canvas, simulation.simm_array);
-            simulation.advanceOne();
+        document.getElementById("btn-stop-simulation").onclick = function() {
+            stop();
+        };
+
+        function stop() {
+            running = false;
+            started = false;
+            cancelAnimationFrame(frameID);
+        }
+
+        function start() {
+            if (!started) {
+                started = true; };
+
+                frameID = requestAnimationFrame(function(timestamp) {
+                    simulation_instance.advanceOne();
+                    running = true;
+                    lastFrameTimeMs = timestamp;
+                    lastFpsUpdate = timestamp;
+                    framesThisSecond = 0;
+                    frameID = requestAnimationFrame(mainLoop);
+                });
+        }
+
+        function mainLoop(timestamp) {
+            // Throttle the frame rate.    
+            if (timestamp < lastFrameTimeMs + (1000 / maxFPS)) {
+                frameID = requestAnimationFrame(mainLoop);
+                return;
+            }
+            delta += timestamp - lastFrameTimeMs;
+            lastFrameTimeMs = timestamp;
+
+            if (timestamp > lastFpsUpdate + 1000) {
+                fps = 0.25 * framesThisSecond + 0.75 * fps;
+
+                lastFpsUpdate = timestamp;
+                framesThisSecond = 0;
+            }
+            framesThisSecond++;
+
+            var numUpdateSteps = 0;
+            while (delta >= timestep) {
+                delta -= timestep;
+                if (++numUpdateSteps >= 240) {
+                    panic();
+                    break;
+                }
+            }
+            simulation_instance.advanceOne();
+            frameID = requestAnimationFrame(mainLoop);
         };
 
     });
-
-
 
 </script>
 
@@ -104,6 +151,7 @@
 
 <div class="buttons-div">
     <span><button type="button" id="btn-start-simulation" class="btn btn-info">Start Simulation</button></span>
+    <span><button type="button" id="btn-stop-simulation" class="btn btn-info">Stop Simulation</button></span>
 </div>
 
 {% endblock %}
