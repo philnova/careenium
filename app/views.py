@@ -12,3 +12,8 @@ def index():
 def about():
     return render_template('about.html',
                             development=True,)
+
+@app.route('/about_careenium')
+def about_careenium():
+    return render_template('about_careenium.html',
+                            development=True,)

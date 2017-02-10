@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Careenium
+{% endblock %}
+
+{% block head %} 
+    {% if development %}
+        <base href="http:127.0.0.1:5000" /> 
+    {% else %}
+        <base href="https:real-url-will-eventually-go-here.com" /> 
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div>
+
+    <p>
+        This is the page about the Careenium.
+    </p>
+
+</div>
+
+{% endblock %}
